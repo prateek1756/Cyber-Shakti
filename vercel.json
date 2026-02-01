@@ -1,0 +1,12 @@
+{
+  "buildCommand": "pnpm build:client",
+  "outputDirectory": "dist/spa",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
