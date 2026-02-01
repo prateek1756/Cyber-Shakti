@@ -29,6 +29,12 @@ export default function SiteHeader() {
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-6 md:flex">
           <Link
+            to="/"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Home
+          </Link>
+          <Link
             to="/features"
             className="text-sm text-muted-foreground hover:text-foreground"
           >

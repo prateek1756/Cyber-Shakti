@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Shield, Menu, X, Scan, BookOpen, AlertTriangle, Grid3X3 } from "lucide-react";
+import { Shield, Menu, X, Scan, BookOpen, AlertTriangle, Grid3X3, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navItems = [
+  { href: "/", label: "Home", icon: Home },
   { href: "/features", label: "Features", icon: Grid3X3 },
   { href: "/phishing-scanner", label: "Scanner", icon: Scan },
   { href: "/tips", label: "Tips", icon: BookOpen },
