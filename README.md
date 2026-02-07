@@ -1,5 +1,7 @@
 # CyberShakti
 
+🔗 **Live Demo:** [https://cyber-shakti-alpha.vercel.app/](https://cyber-shakti-alpha.vercel.app/)
+
 A modern, production-ready web app to help users stay safe online. CyberShakti brings real-time protection concepts like scam call blocking, phishing link scanning, fraud message detection, fake profile verification, deepfake detection UI, daily safety tips, and location-based scam alerts.
 
 ## Features
