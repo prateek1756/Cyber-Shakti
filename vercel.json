@@ -4,6 +4,7 @@
   "outputDirectory": "dist/spa",
   "devCommand": "pnpm dev",
   "installCommand": "pnpm install",
+  "trailingSlash": false,
   "functions": {
     "api/index.ts": {
       "runtime": "vercel-node@latest"
