@@ -7,6 +7,9 @@ import scannerRoutes from "./routes/scanner";
 import { PythonBridge } from "./python-bridge";
 import { createDeepfakeProxy } from "./routes/deepfake-proxy";
 import { loadFlaskConfig } from "./config";
+import scamRoutes from "./routes/scams";
+import generalReportRoutes from "./routes/generalReports";
+import fraudDetectionRoutes from "./routes/fraudDetection";
 
 export function createServer(pythonBridge?: PythonBridge) {
   const app = express();
@@ -34,15 +37,12 @@ export function createServer(pythonBridge?: PythonBridge) {
   app.use("/api/scanner", scannerRoutes);
 
   // Scam alert routes (location-based)
-  const scamRoutes = require("./routes/scams").default;
   app.use("/api/scams", scamRoutes);
 
   // General scam report routes (non-location-based)
-  const generalReportRoutes = require("./routes/generalReports").default;
   app.use("/api/reports", generalReportRoutes);
 
   // Fraud detection routes (proxy to Python service)
-  const fraudDetectionRoutes = require("./routes/fraudDetection").default;
   app.use("/api/fraud", fraudDetectionRoutes);
 
   // Serve uploaded files
