@@ -6,7 +6,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from fraud_dataset import FRAUD_DATA
 
-MODEL_PATH = 'fraud_model.joblib'
+MODEL_PATH = os.path.join(os.path.dirname(__file__), 'fraud_model.joblib')
 
 class FraudModelManager:
     def __init__(self):
@@ -50,8 +50,12 @@ class FraudModelManager:
         
         # Save the model
         try:
-            joblib.dump(self.model, MODEL_PATH)
-            print("[ML Model] Model trained and saved to disk.")
+            # Try to save, but don't fail if read-only
+            if not os.environ.get('VERCEL'):
+                joblib.dump(self.model, MODEL_PATH)
+                print("[ML Model] Model trained and saved to disk.")
+            else:
+                print("[ML Model] Model trained but not saved (Vercel read-only).")
         except Exception as e:
             print(f"[ML Model] Could not save model: {e}")
 

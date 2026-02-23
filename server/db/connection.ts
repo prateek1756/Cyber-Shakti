@@ -29,6 +29,10 @@ let pool: mysql.Pool | null = null;
  */
 export function getPool(): mysql.Pool {
   if (!pool) {
+    // Basic check for production to avoid crashing if DB is not configured
+    if (process.env.NODE_ENV === 'production' && !process.env.DB_HOST) {
+      console.warn('[Database] WARNING: DB_HOST not set in production. Database features will be unavailable.');
+    }
     pool = mysql.createPool(dbConfig);
     console.log('[Database] MySQL connection pool created');
   }
@@ -77,7 +81,7 @@ export async function executeQuery<T = any>(
 ): Promise<T> {
   const connection = await getPool().getConnection();
   try {
-    const [results] = await connection.execute(query, params);
+    const [results] = await connection.execute(query, params || []);
     return results as T;
   } finally {
     connection.release();
