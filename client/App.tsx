@@ -23,6 +23,8 @@ const FraudDetection = lazy(() => import("./pages/FraudDetection"));
 const ScamCallBlocking = lazy(() => import("./pages/ScamCallBlocking"));
 const FakeProfileVerification = lazy(() => import("./pages/FakeProfileVerification"));
 const DeepfakeDetection = lazy(() => import("./pages/DeepfakeDetection"));
+const ReportScam = lazy(() => import("./pages/ReportScam"));
+const ScamAlerts = lazy(() => import("./pages/ScamAlerts"));
 
 const queryClient = new QueryClient();
 
@@ -48,6 +50,8 @@ const App = () => (
                 <Route path="/deepfake-detection" element={<DeepfakeDetection />} />
                 <Route path="/tips" element={<Tips />} />
                 <Route path="/alerts" element={<Alerts />} />
+                <Route path="/report-scam" element={<ReportScam />} />
+                <Route path="/scam-alerts" element={<ScamAlerts />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

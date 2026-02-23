@@ -25,3 +25,22 @@ dist-ssr
 
 .config/
 !.env
+
+# Python
+python/venv/
+python/__pycache__/
+**/__pycache__/
+*.joblib
+.ipynb_checkpoints/
+
+# Temporary test files
+test_message.json
+test_fraud_logic.py
+
+# Media and Uploads
+python/uploads/
+**/uploads/
+*.mp4
+*.avi
+*.mov
+*.mkv

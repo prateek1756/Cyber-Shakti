@@ -136,17 +136,14 @@ export default function EnhancedScanner() {
                   <p className="text-sm text-muted-foreground">Overall Risk Assessment</p>
                   <RiskPill level={result.verdict} score={result.score} />
                   
-                  {/* Show appropriate percentage based on verdict */}
-                  <div className="mt-2">
-                    {result.verdict === 'safe' ? (
-                      <p className="text-sm text-emerald-400">
-                        ✓ {result.safetyScore}% Safe
-                      </p>
-                    ) : (
-                      <p className="text-sm text-red-400">
-                        ⚠ {result.score}% Suspicious
-                      </p>
-                    )}
+                  {/* Show both safe and unsafe percentages */}
+                  <div className="mt-2 space-y-1">
+                    <p className="text-sm text-emerald-400">
+                      ✓ {result.safetyScore}% Safe
+                    </p>
+                    <p className="text-sm text-red-400">
+                      ⚠ {100 - result.safetyScore}% Unsafe
+                    </p>
                   </div>
                   
                   {result.reasons.length > 0 && (
@@ -181,10 +178,7 @@ export default function EnhancedScanner() {
                     />
                   </div>
                   <p className="mt-1 text-xs text-center text-muted-foreground">
-                    {result.verdict === 'safe' 
-                      ? `${result.safetyScore}% Safe` 
-                      : `${result.score}% Risk`
-                    }
+                    Safe: {result.safetyScore}% | Unsafe: {100 - result.safetyScore}%
                   </p>
                 </div>
               </div>

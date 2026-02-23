@@ -10,6 +10,10 @@ echo Waiting for backend to start...
 timeout /t 3 /nobreak > nul
 
 echo.
+echo Starting Fraud Detection API...
+start "Fraud Detector" cmd /k "cd python && venv\Scripts\activate.bat && python fraud_detector.py"
+
+echo.
 echo Starting Frontend...
 start "Frontend" cmd /k "pnpm dev"
 
