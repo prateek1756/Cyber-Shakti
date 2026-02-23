@@ -28,7 +28,12 @@ export function createServer(pythonBridge?: PythonBridge) {
   // Example API routes
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "CyberGuard API is running";
-    res.json({ message: ping, timestamp: new Date().toISOString() });
+    res.json({
+      message: ping,
+      version: "1.0.1",
+      timestamp: new Date().toISOString(),
+      environment: process.env.VERCEL ? 'vercel' : 'local'
+    });
   });
 
   app.get("/api/demo", handleDemo);
