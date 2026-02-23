@@ -48,8 +48,8 @@ export function createServer(pythonBridge?: PythonBridge) {
   // Serve uploaded files
   app.use("/uploads", express.static("uploads"));
 
-  // Deepfake proxy routes (if PythonBridge is provided)
-  if (pythonBridge) {
+  // Deepfake proxy routes (if PythonBridge is provided and NOT on Vercel)
+  if (pythonBridge && !process.env.VERCEL) {
     const deepfakeProxy = createDeepfakeProxy({
       bridge: pythonBridge,
       targetUrl: pythonBridge.getFlaskUrl(),
@@ -94,8 +94,16 @@ export async function startServer(): Promise<void> {
     isDevelopment: flaskConfig.isDevelopment,
   });
 
-  // Start Flask server
-  await pythonBridge.start();
+  // Start Flask server (Skip on Vercel)
+  if (!process.env.VERCEL) {
+    try {
+      await pythonBridge.start();
+    } catch (error) {
+      console.warn('[Server] Failed to start PythonBridge, but continuing...', error);
+    }
+  } else {
+    console.log('[Server] Vercel detected, skipping PythonBridge startup');
+  }
 
   // Create Express app with PythonBridge
   const app = createServer(pythonBridge);

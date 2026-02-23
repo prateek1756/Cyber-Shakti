@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import tempfile
-from deepfake_detector import DeepfakeDetector
+from python.deepfake_detector import DeepfakeDetector
 import json
 from datetime import datetime
 

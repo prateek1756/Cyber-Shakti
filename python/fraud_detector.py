@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import re
 from typing import Dict, List, Tuple
-from model_manager import model_manager
+from python.model_manager import model_manager
 
 app = Flask(__name__)
 CORS(app)

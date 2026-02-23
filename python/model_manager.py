@@ -4,7 +4,7 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
-from fraud_dataset import FRAUD_DATA
+from python.fraud_dataset import FRAUD_DATA
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), 'fraud_model.joblib')
 

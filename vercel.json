@@ -8,21 +8,21 @@
     "api/index.ts": {
       "runtime": "vercel-node@latest"
     },
-    "python/fraud_detector.py": {
+    "api/fraud.py": {
       "runtime": "vercel-python@latest"
     },
-    "python/api_server.py": {
+    "api/deepfake.py": {
       "runtime": "vercel-python@latest"
     }
   },
   "rewrites": [
     {
       "source": "/api/fraud/(.*)",
-      "destination": "/python/fraud_detector.py"
+      "destination": "/api/fraud.py"
     },
     {
       "source": "/api/deepfake/(.*)",
-      "destination": "/python/api_server.py"
+      "destination": "/api/deepfake.py"
     },
     {
       "source": "/api/(.*)",

@@ -23,6 +23,16 @@ const FRAUD_API_URL = process.env.FRAUD_API_URL || 'http://127.0.0.1:8000';
 router.post('/detect', async (req: Request, res: Response) => {
   try {
     const { message } = req.body;
+
+    // In Vercel, we should be hitting the Python shim directly from the frontend.
+    // However, if we hit this Express route, we should return a meaningful error or redirect.
+    if (process.env.VERCEL) {
+      return res.status(404).json({
+        success: false,
+        error: 'This endpoint is handled by Vercel serverless functions directly at /api/fraud/detect'
+      });
+    }
+
     console.log('[FraudDetection] Analyzing message:', message);
     console.log('[FraudDetection] Using API URL:', FRAUD_API_URL);
 
