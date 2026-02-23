@@ -1,0 +1,16 @@
+node_modules
+dist
+.example
+.env
+.builder
+python/__pycache__
+python/venv
+python/.venv
+python/models/*.pkl
+python/models/*.joblib
+python/uploads
+server/node-build.mjs
+server/dist
+uploads
+*.log
+.git

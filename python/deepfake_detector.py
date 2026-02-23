@@ -10,6 +10,9 @@ import json as json_module
 
 # #region agent log
 def debug_log(location, message, data, hypothesis_id):
+    # Skip logging on Vercel
+    if os.environ.get('VERCEL'):
+        return
     try:
         log_entry = {
             "sessionId": "debug-session",
@@ -20,7 +23,8 @@ def debug_log(location, message, data, hypothesis_id):
             "data": data,
             "timestamp": int(datetime.now().timestamp() * 1000)
         }
-        with open(r"c:\projects\CyberShakti\.cursor\debug.log", "a", encoding="utf-8") as f:
+        log_path = os.path.join(os.path.dirname(__file__), "debug.log")
+        with open(log_path, "a", encoding="utf-8") as f:
             f.write(json_module.dumps(log_entry) + "\n")
     except:
         pass
@@ -54,16 +58,24 @@ class DeepfakeDetector:
     
     def load_or_create_model(self):
         """Load existing model or create new one"""
+        # Ensure path is absolute and reachable
+        if not os.path.isabs(self.model_path):
+            self.model_path = os.path.join(os.path.dirname(__file__), self.model_path)
+            
         if os.path.exists(self.model_path):
             try:
                 with open(self.model_path, 'rb') as f:
                     self.model = pickle.load(f)
-                print("Loaded existing model")
+                print(f"Loaded existing model from {self.model_path}")
             except:
                 print("Created new model")
         else:
-            os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
-            print("Created new model")
+            try:
+                os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
+                print("Created new model")
+            except:
+                # Fallback for read-only filesystem
+                print("Created new model (read-only filesystem)")
     
     def extract_features(self, image_path):
         """Extract image features for analysis"""
@@ -235,19 +247,31 @@ class DeepfakeDetector:
     
     def save_training_data(self):
         """Save training data to disk"""
-        data_path = "models/training_data.pkl"
-        os.makedirs(os.path.dirname(data_path), exist_ok=True)
-        
-        with open(data_path, 'wb') as f:
-            pickle.dump({
-                'training_data': self.training_data,
-                'labels': self.labels,
-                'timestamp': datetime.now().isoformat()
-            }, f)
+        if os.environ.get('VERCEL'):
+            data_path = "/tmp/training_data.pkl"
+        else:
+            data_path = os.path.join(os.path.dirname(__file__), "models/training_data.pkl")
+            
+        try:
+            os.makedirs(os.path.dirname(data_path), exist_ok=True)
+            with open(data_path, 'wb') as f:
+                pickle.dump({
+                    'training_data': self.training_data,
+                    'labels': self.labels,
+                    'timestamp': datetime.now().isoformat()
+                }, f)
+        except Exception as e:
+            print(f"Could not save training data: {e}")
     
     def load_training_data(self):
         """Load training data from disk"""
-        data_path = "models/training_data.pkl"
+        if os.environ.get('VERCEL'):
+            # On Vercel, we can try to load from /tmp if it was saved there in the same instance
+            # or skip if we don't include it in the deployment bundle
+            data_path = "/tmp/training_data.pkl"
+        else:
+            data_path = os.path.join(os.path.dirname(__file__), "models/training_data.pkl")
+
         if os.path.exists(data_path):
             try:
                 with open(data_path, 'rb') as f:

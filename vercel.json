@@ -1,9 +1,34 @@
 {
+  "version": 2,
   "buildCommand": "pnpm build:client",
   "outputDirectory": "dist/spa",
   "devCommand": "pnpm dev",
   "installCommand": "pnpm install",
+  "trailingSlash": false,
+  "functions": {
+    "api/index.ts": {
+      "runtime": "vercel-node@latest"
+    },
+    "api/fraud.py": {
+      "runtime": "vercel-python@latest"
+    },
+    "api/deepfake.py": {
+      "runtime": "vercel-python@latest"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/fraud/(.*)",
+      "destination": "/api/fraud.py"
+    },
+    {
+      "source": "/api/deepfake/(.*)",
+      "destination": "/api/deepfake.py"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.ts"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

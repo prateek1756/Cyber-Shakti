@@ -2,12 +2,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import tempfile
-from deepfake_detector import DeepfakeDetector
+from python.deepfake_detector import DeepfakeDetector
 import json
 from datetime import datetime
 
 # #region agent log
 def debug_log(location, message, data, hypothesis_id):
+    # Skip logging on Vercel to avoid filesystem errors
+    if os.environ.get('VERCEL'):
+        return
     try:
         log_entry = {
             "sessionId": "debug-session",
@@ -18,7 +21,9 @@ def debug_log(location, message, data, hypothesis_id):
             "data": data,
             "timestamp": int(datetime.now().timestamp() * 1000)
         }
-        with open(r"c:\projects\CyberShakti\.cursor\debug.log", "a", encoding="utf-8") as f:
+        # Use a relative path or /tmp for logging if needed
+        log_path = os.path.join(tempfile.gettempdir(), "debug.log")
+        with open(log_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(log_entry) + "\n")
     except:
         pass
@@ -47,7 +52,10 @@ except Exception as e:
     raise
 
 # Ensure upload directory exists
-UPLOAD_DIR = "uploads"
+if os.environ.get('VERCEL'):
+    UPLOAD_DIR = "/tmp/uploads"
+else:
+    UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @app.route('/api/deepfake/analyze', methods=['POST'])
