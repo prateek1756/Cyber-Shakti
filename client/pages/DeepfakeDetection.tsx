@@ -47,7 +47,7 @@ export default function DeepfakeDetection() {
 
   const checkApiConnection = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/deepfake/stats');
+      const response = await fetch('/api/deepfake/stats');
       if (response.ok) {
         const data = await response.json();
         setStats(data);
@@ -69,28 +69,28 @@ export default function DeepfakeDetection() {
     }
 
     setAnalyzing(true);
-    
+
     try {
       const formData = new FormData();
       formData.append('file', file);
-      
-      const response = await fetch('http://localhost:5001/api/deepfake/analyze', {
+
+      const response = await fetch('/api/deepfake/analyze', {
         method: 'POST',
         body: formData
       });
-      
+
       if (!response.ok) {
         throw new Error('Analysis failed');
       }
-      
+
       const data = await response.json();
       setResult(data);
-      
+
       toast({
         title: "Analysis Complete",
         description: `Detection confidence: ${(data.confidence * 100).toFixed(1)}%`
       });
-      
+
     } catch (error) {
       toast({
         title: "Analysis Failed",
@@ -112,17 +112,17 @@ export default function DeepfakeDetection() {
 
   const submitFeedback = async (isCorrect: boolean) => {
     if (!file || !result) return;
-    
+
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('is_deepfake', JSON.stringify(!isCorrect ? !result.is_deepfake : result.is_deepfake));
-      
-      const response = await fetch('http://localhost:5001/api/deepfake/feedback', {
+
+      const response = await fetch('/api/deepfake/feedback', {
         method: 'POST',
         body: formData
       });
-      
+
       if (response.ok) {
         toast({
           title: "Feedback Submitted",
@@ -142,7 +142,7 @@ export default function DeepfakeDetection() {
   const handleFileSelect = useCallback((selectedFile: File) => {
     setFile(selectedFile);
     setResult(null);
-    
+
     // Create preview for images
     if (selectedFile.type.startsWith('image/')) {
       const reader = new FileReader();
@@ -151,7 +151,7 @@ export default function DeepfakeDetection() {
     } else {
       setPreview(null);
     }
-    
+
     analyzeFile(selectedFile);
   }, [analyzeFile]);
 
@@ -196,9 +196,9 @@ export default function DeepfakeDetection() {
                   <Brain className="h-4 w-4" />
                   {stats.training_samples} samples
                 </span>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
+                <Button
+                  size="sm"
+                  variant="outline"
                   onClick={checkApiConnection}
                 >
                   Refresh
@@ -208,7 +208,7 @@ export default function DeepfakeDetection() {
           </div>
           {!apiConnected && (
             <p className="text-sm text-muted-foreground mt-2">
-              Run: <code className="bg-muted px-1 rounded">cd python && python api_server.py</code>
+              Model connection failed. Please check Vercel logs.
             </p>
           )}
         </CardContent>
@@ -259,9 +259,9 @@ export default function DeepfakeDetection() {
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
               {preview && (
-                <img 
-                  src={preview} 
-                  alt="Preview" 
+                <img
+                  src={preview}
+                  alt="Preview"
                   className="w-24 h-24 object-cover rounded-lg border"
                 />
               )}
@@ -315,12 +315,12 @@ export default function DeepfakeDetection() {
               <>
                 <div className="flex items-center justify-between">
                   <span className="font-medium">Verdict:</span>
-                  <VerdictBadge 
-                    isDeepfake={result.is_deepfake} 
-                    confidence={result.confidence} 
+                  <VerdictBadge
+                    isDeepfake={result.is_deepfake}
+                    confidence={result.confidence}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>Model Score: {(result.model_prediction * 100).toFixed(1)}%</div>
                   <div>Compression Artifacts: {(result.compression_artifacts * 100).toFixed(1)}%</div>
@@ -330,8 +330,8 @@ export default function DeepfakeDetection() {
 
                 {/* Feedback Buttons */}
                 <div className="flex gap-2 pt-4">
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
                     onClick={() => submitFeedback(true)}
                     className="flex items-center gap-1"
@@ -339,8 +339,8 @@ export default function DeepfakeDetection() {
                     <CheckCircle className="h-4 w-4" />
                     Correct
                   </Button>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
                     onClick={() => submitFeedback(false)}
                     className="flex items-center gap-1"
@@ -354,7 +354,7 @@ export default function DeepfakeDetection() {
 
             <div className="mt-4 p-3 bg-muted/50 rounded-lg">
               <p className="text-xs text-muted-foreground">
-                <strong>Self-Learning AI:</strong> This model improves with your feedback. 
+                <strong>Self-Learning AI:</strong> This model improves with your feedback.
                 Click "Correct" or "Incorrect" to help train the system.
               </p>
             </div>
@@ -366,10 +366,10 @@ export default function DeepfakeDetection() {
 }
 
 function VerdictBadge({ isDeepfake, confidence }: { isDeepfake: boolean, confidence: number }) {
-  const style = isDeepfake 
+  const style = isDeepfake
     ? "bg-red-500/15 text-red-300 ring-red-500/30"
     : "bg-green-500/15 text-green-300 ring-green-500/30";
-  
+
   const label = isDeepfake ? "Likely Deepfake" : "Likely Authentic";
 
   return (

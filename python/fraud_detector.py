@@ -269,7 +269,7 @@ def detect_fraud(message: str) -> Dict:
     }
 
 
-@app.route('/detect', methods=['POST'])
+@app.route('/api/fraud/detect', methods=['POST'])
 def detect():
     """Fraud detection endpoint"""
     try:
@@ -298,7 +298,7 @@ def detect():
         }), 500
 
 
-@app.route('/health', methods=['GET'])
+@app.route('/api/fraud/health', methods=['GET'])
 def health():
     """Health check endpoint"""
     return jsonify({

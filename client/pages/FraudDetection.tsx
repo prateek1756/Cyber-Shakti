@@ -74,9 +74,10 @@ export default function FraudDetection() {
       setResult(responseData.data);
     } catch (error) {
       console.error("Analysis error:", error);
+      const detail = error instanceof Error ? error.message : "Network failure";
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Could not analyze message. Please try again.",
+        description: `Analysis failed: ${detail}. Please check Vercel logs for Python errors.`,
         variant: "destructive",
       });
     } finally {

@@ -56,7 +56,7 @@ export default function EnhancedScanner() {
 
   const scanUrl = async () => {
     if (!url.trim()) return;
-    
+
     setLoading(true);
     setError(null);
     setResult(null);
@@ -68,6 +68,12 @@ export default function EnhancedScanner() {
         body: JSON.stringify({ url: url.trim() }),
       });
 
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => "Unknown error");
+        setError(`Scan failed (Status ${response.status}): ${errorText.substring(0, 100)}`);
+        return;
+      }
+
       const data = await response.json();
 
       if (data.success) {
@@ -76,7 +82,7 @@ export default function EnhancedScanner() {
         setError(data.error || "Scan failed");
       }
     } catch (err) {
-      setError("Network error. Please try again.");
+      setError(`Network error: ${err instanceof Error ? err.message : "Connect failed"}. Please check Vercel Logs.`);
     } finally {
       setLoading(false);
     }
@@ -104,8 +110,8 @@ export default function EnhancedScanner() {
               className="h-11 flex-1 rounded-md border bg-background/60 px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               onKeyDown={(e) => e.key === "Enter" && scanUrl()}
             />
-            <Button 
-              onClick={scanUrl} 
+            <Button
+              onClick={scanUrl}
               disabled={loading || !url.trim()}
               className="h-11 min-w-[100px]"
             >
@@ -135,7 +141,7 @@ export default function EnhancedScanner() {
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Overall Risk Assessment</p>
                   <RiskPill level={result.verdict} score={result.score} />
-                  
+
                   {/* Show both safe and unsafe percentages */}
                   <div className="mt-2 space-y-1">
                     <p className="text-sm text-emerald-400">
@@ -145,7 +151,7 @@ export default function EnhancedScanner() {
                       ⚠ {100 - result.safetyScore}% Unsafe
                     </p>
                   </div>
-                  
+
                   {result.reasons.length > 0 && (
                     <div className="mt-3">
                       <p className="text-xs font-medium text-muted-foreground mb-2">Risk Factors:</p>
@@ -157,7 +163,7 @@ export default function EnhancedScanner() {
                     </div>
                   )}
                 </div>
-                
+
                 {/* Risk Score Bar */}
                 <div className="ml-4">
                   <div className="relative h-2 w-32 overflow-hidden rounded-full bg-secondary">
@@ -167,13 +173,13 @@ export default function EnhancedScanner() {
                         result.verdict === "danger"
                           ? "bg-red-500"
                           : result.verdict === "suspicious"
-                          ? "bg-yellow-500"
-                          : "bg-emerald-500"
+                            ? "bg-yellow-500"
+                            : "bg-emerald-500"
                       )}
-                      style={{ 
-                        width: result.verdict === 'safe' 
-                          ? `${result.safetyScore}%` 
-                          : `${result.score}%` 
+                      style={{
+                        width: result.verdict === 'safe'
+                          ? `${result.safetyScore}%`
+                          : `${result.score}%`
                       }}
                     />
                   </div>
@@ -222,14 +228,14 @@ export default function EnhancedScanner() {
   );
 }
 
-function DetailCard({ 
-  title, 
-  description, 
-  result 
-}: { 
-  title: string; 
-  description: string; 
-  result: { score: number; reasons: string[] }; 
+function DetailCard({
+  title,
+  description,
+  result
+}: {
+  title: string;
+  description: string;
+  result: { score: number; reasons: string[] };
 }) {
   const getColor = (score: number) => {
     if (score >= 70) return "text-red-400";
@@ -248,7 +254,7 @@ function DetailCard({
           {result.score}%
         </span>
       </div>
-      
+
       {result.reasons.length > 0 && (
         <ul className="list-inside list-disc text-xs text-muted-foreground">
           {result.reasons.slice(0, 2).map((reason, i) => (
